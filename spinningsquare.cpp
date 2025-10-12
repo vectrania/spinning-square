@@ -6,7 +6,7 @@
 using namespace std;
 
 #define BOARDSIZE 60
-char board[BOARDSIZE][BOARDSIZE * 2];
+char buffer[BOARDSIZE][BOARDSIZE * 2];
 int SIZE = BOARDSIZE / 2;
 
 int calcY(float a) {
@@ -34,7 +34,7 @@ void connPoint(float ax, float bx, float ay, float by)
 	    int roundX = round(x);
 	  	int roundY = round(y);
       if (roundX >= 0 && roundX < BOARDSIZE * 2 && roundY >= 0 && roundY < BOARDSIZE)
-	  		board[roundY][roundX] = '#';
+	  		buffer[roundY][roundX] = '#';
 	  	x += x_increase;
 	  	y += y_increase;
 	  }
@@ -55,12 +55,8 @@ int main() {
 	float turn = 0.0;
 	while (true) {
 		cout << "\033[2J\033[1;1H";
-		for (int i = 0; i < BOARDSIZE; ++i) {
-			for (int j = 0; j < BOARDSIZE * 2; ++j) {
-				board[i][j] = ' ';
-			}
-		}
-		// board[SIZE][BOARDSIZE] = '@';
+		memset(buffer, ' ', sizeof(buffer));
+
 		no1.x = calcX(turn) + SIZE;
 		no1.y = calcY(turn) + SIZE;
 		no1.x *= 2;
@@ -86,10 +82,10 @@ int main() {
     int rno4x = round(no4.x);
     int rno4y = round(no4.y);
 
-		board[rno1y][rno1x] = '#';
-		board[rno2y][rno2x] = '#';
-		board[rno3y][rno3x] = '#';
-		board[rno4y][rno4x] = '#';
+		buffer[rno1y][rno1x] = '#';
+		buffer[rno2y][rno2x] = '#';
+		buffer[rno3y][rno3x] = '#';
+		buffer[rno4y][rno4x] = '#';
 		
 		side();
 
@@ -98,7 +94,7 @@ int main() {
 			turn = 0.1;
 		for (int i = 0; i < BOARDSIZE; i++) {
 			for (int j = 0; j < BOARDSIZE * 2; ++j) {
-				cout << board[i][j];
+				cout << buffer[i][j];
 			}
 			cout << '\n';
 		}
