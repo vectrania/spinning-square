@@ -7,4 +7,4 @@ run:
 	./spinningsquare
 
 clean:
-	rm -rf spinningsquare
+	rm -rf spinningsquare build/
