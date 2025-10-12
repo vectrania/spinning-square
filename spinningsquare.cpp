@@ -1,9 +1,11 @@
+// Im just a noob programer, but nothing can stop me coding ;]
+
 #include <iostream>
 #include <math.h>
 #include <unistd.h>
 using namespace std;
 
-#define BOARDSIZE 40
+#define BOARDSIZE 60
 char board[BOARDSIZE][BOARDSIZE * 2];
 int SIZE = BOARDSIZE / 2;
 
@@ -44,6 +46,8 @@ void side() {
   connPoint(no1.x, no4.x, no1.y, no4.y);
   connPoint(no3.x, no2.x, no3.y, no2.y);
   connPoint(no2.x, no4.x, no2.y, no4.y);
+  connPoint(no1.x, no2.x, no1.y, no2.y);
+  connPoint(no3.x, no4.x, no3.y, no4.y);
 	return;
 }
 
@@ -89,10 +93,8 @@ int main() {
 		
 		side();
 
-		turn -= 0.01;
-		if (turn <= 0.0)
-			turn = 90;
-		if (turn > 90)
+		turn += 0.01;
+		if (turn >= M_PI)
 			turn = 0.1;
 		for (int i = 0; i < BOARDSIZE; i++) {
 			for (int j = 0; j < BOARDSIZE * 2; ++j) {
@@ -100,6 +102,7 @@ int main() {
 			}
 			cout << '\n';
 		}
+    cout << turn << endl;
 		usleep(10000);
 	}
 }
