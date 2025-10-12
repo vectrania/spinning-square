@@ -29,12 +29,12 @@ void connPoint(float ax, float bx, float ay, float by)
 	  float x_increase = longX / steps;
 	  float y_increase = longY / steps;
 	  for (float i = 0; i <= steps; ++i) {
+	    int roundX = round(x);
+	  	int roundY = round(y);
+      if (roundX >= 0 && roundX < BOARDSIZE * 2 && roundY >= 0 && roundY < BOARDSIZE)
+	  		board[roundY][roundX] = '#';
 	  	x += x_increase;
 	  	y += y_increase;
-	  	int roundX = round(x);
-	  	int roundY = round(y);
-     if (roundX >= 0 && roundX < BOARDSIZE * 2 && roundY >= 0 && roundY < BOARDSIZE)
-	  		board[roundY][roundX] = '#';
 	  }
   }
 
