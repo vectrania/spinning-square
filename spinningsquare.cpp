@@ -18,13 +18,13 @@ int calcY(float t) {
 	// Gọi đường thẳng nối từ tâm O đồ thị đến một đỉnh của hình vuông là OA
 	//     số đo góc tạo bởi OA và trục hoành là T
 	// Khi có OA (có độ dài là SIZE) và góc T thì có thể dùng tỉ số lượng giác sau:
-	//			cạnh đối (chính là Y)
-	// sin(góc) = ----------------------------------------
-	//   	      cạnh huyền (đường thẳng từ tâm đến đỉnh)
+	//
+	// sin(góc) = cạnh đối (chính là Y) / cạnh huyền (đường thẳng từ tâm đến đỉnh)
+	//   	      
 	// hay:
-	// 	    Y
-	// sin(T) = --
-	// 	    OA
+	// 	    
+	// sin(T) = Y / OA
+	//
 	// => Y = sin(T) * OA
 	// Giả sử góc T là 30 độ:
 	// Thay T = 30, OA = SIZE vào biểu thức trên:
@@ -40,13 +40,13 @@ int calcX(float t) {
 	// Gọi đường thẳng nối từ tâm O đồ thị đến một đỉnh của hình vuông là OA
 	//     số đo góc tạo bởi OA và trục hoành là T
 	// Khi có OA (có độ dài là SIZE) và góc T thì có thể dùng tỉ số lượng giác sau:
-	//			cạnh kề (chính là X)
-	// cos(góc) = ----------------------------------------
-	//   	      cạnh huyền (đường thẳng từ tâm đến đỉnh)
+	//			
+	// cos(góc) = cạnh kề (chính là X) / cạnh huyền (đường thẳng từ tâm đến đỉnh)
+	//   	      
 	// hay:
-	// 	    X
-	// cos(T) = --
-	// 	    OA
+	// 	    
+	// cos(T) = X / OA
+	// 
 	// => X = cos(T) * OA
 	// Giả sử góc T là 30 độ:
 	// Thay T = 30, OA = SIZE vào biểu thức trên:
@@ -63,18 +63,17 @@ struct point {
 	float y;
 } no1, no2, no3, no4; // Tạo 4 đỉnh của hình vuông
 
-void connPoint(float ax, float bx, float ay, float by) // Nối 2 điểm lại sử dụng DDA
+void connPoint(float ax, float bx, float ay, float by) // Nối 2 điểm a b lại sử dụng DDA
 {
 	float longX = (float)(bx - ax); // Tính khoảng cách X 2 điểm
 	float longY = (float)(by - ay); // Tính khoảng cách Y 2 điểm
 	float steps = max(abs(longX), abs(longY)); // Tìm số bước
-	float x_increase = longX / steps; // Tính các bậc thang X mỗi bước
-	float y_increase = longY / steps; // Tính các bậc thang Y mỗi bước
+	float x_increase = longX / steps; // Tính các bậc thang X
+	float y_increase = longY / steps; // Tính các bậc thang Y
 	for (float i = 0; i <= steps; ++i) {
 		int roundX = round(ax); // Làm tròn X tránh lỗi khi gán vào mảng buffer
 		int roundY = round(ay); // Làm tròn Y tránh lỗi khi gán vào mảng buffer
-      		// if (roundX >= 0 && roundX < BOARDSIZE * 2 && roundY >= 0 && roundY < BOARDSIZE)
-			buffer[roundY][roundX] = '#';
+		buffer[roundY][roundX] = '#';
 		ax += x_increase; // Thêm 1 bậc thang cho X
 		ay += y_increase; // Thêm 1 bậc thang cho Y
 	}
