@@ -6,13 +6,13 @@
 #include <cstring>
 using namespace std;
 
-#define BOARDSIZE 60 // Kích thước đồ thị
+#define BOARDSIZE 61 // Kích thước đồ thị
 char buffer[BOARDSIZE][BOARDSIZE * 2]; // Mảng 2 chiều biểu thị đồ thị để in ra màn hình console
 int SIZE = BOARDSIZE / 2; // Kích thước hình vuông
 
 
 
-int calcY(float t) {
+float calcY(float t) {
 	return sin(t) * SIZE;
 	// Tính Y:
 	// Gọi đường thẳng nối từ tâm O đồ thị đến một đỉnh của hình vuông là OA
@@ -34,7 +34,7 @@ int calcY(float t) {
 	// Vậy Y = 15
 }
 
-int calcX(float t) {
+float calcX(float t) {
 	return cos(t) * SIZE;
 	// Tính X:
 	// Gọi đường thẳng nối từ tâm O đồ thị đến một đỉnh của hình vuông là OA
@@ -86,35 +86,69 @@ void side() { // Nối các điểm lại
 	connPoint(no3.x, no2.x, no3.y, no2.y); // Nối 3 - 2
 	connPoint(no2.x, no4.x, no2.y, no4.y); // Nối 2 - 3
 	// Nối đường chéo
-	connPoint(no1.x, no2.x, no1.y, no2.y); // Nối 1 - 2
-  	connPoint(no3.x, no4.x, no3.y, no4.y); // Nối 3 - 4
+	// connPoint(no1.x, no2.x, no1.y, no2.y); // Nối 1 - 2
+  	// connPoint(no3.x, no4.x, no3.y, no4.y); // Nối 3 - 4
 	return;
 }
 
+void fill () {
+    for (int i = 0; i < BOARDSIZE; ++i) {
+        bool isOpen = false;
+        bool isVoid = false;
+        bool isClose = false;
+        int openning, closed;
+        for (int j = 0; j < BOARDSIZE * 2; ++j) {
+            if (buffer[i][j] == ' ' && isOpen) {
+                isVoid = true;
+            }
+            if (buffer[i][j] == '#' && isVoid) {
+                isClose = true;
+                closed = j;
+                break;
+            }
+            else if (buffer[i][j] == '#') {
+                isOpen = true;
+                openning = j;
+            }
+        }
+        if (isClose) {
+            while (openning++ <= closed) {
+                buffer[i][openning] = '#';
+            }
+        }
+    }
+}
+
 int main() {
+    cout << "\033[2J\033[1;1H";
 	float turn = 0.0;
 	while (true) {
-		cout << "\033[2J\033[1;1H";
+		cout << "\033[H";
 		memset(buffer, ' ', sizeof(buffer)); // Làm sạch mảng mỗi lần lặp với ký tự ' '
 		
+        float cx = calcX(turn);
+        float cy = calcY(turn);
+        float dcx = calcX(turn + (M_PI / 2)); // M_PI là số PI, 1 PI = 90 độ, không biết tại sao lại vậy nhưng stackoverflow nói vậy thì kệ
+        float dcy = calcY(turn + (M_PI / 2));
+
 		// Tính vị trí x, y điểm 1
-		no1.x = calcX(turn) + SIZE;
-		no1.y = calcY(turn) + SIZE;
+		no1.x = cx + SIZE;
+		no1.y = cy + SIZE;
 		no1.x *= 2;
 
 		// Tính vị trí x, y điểm 2
-		no2.x = SIZE - calcX(turn);
-		no2.y = SIZE - calcY(turn);
+		no2.x = SIZE - cx;
+		no2.y = SIZE - cy;
 		no2.x *= 2;
 
 		// Tính vị trí x, y điểm 3
-		no3.x = SIZE + calcX(turn + M_PI / 2); // M_PI là số PI, 1 PI = 90 độ, không biết tại sao lại vậy nhưng stackoverflow nói vậy thì kệ
-		no3.y = calcY(turn + M_PI / 2) + SIZE;
+		no3.x = SIZE + dcx;
+		no3.y = dcy + SIZE;
 		no3.x *= 2;
 
 		// Tính vị trí x, y điểm 4
-		no4.x = SIZE - calcX(turn + M_PI / 2);
-		no4.y = SIZE - calcY(turn + M_PI / 2);
+		no4.x = SIZE - dcx;
+		no4.y = SIZE - dcy;
 		no4.x *= 2;
 		
 		// Làm tròn để tránh lỗi khi gán # cho mảng buffer để hiển thị
@@ -123,8 +157,8 @@ int main() {
 		int rno2x = round(no2.x);
 		int rno2y = round(no2.y);
 		int rno3x = round(no3.x);
-    		int rno3y = round(no3.y);
-    		int rno4x = round(no4.x);
+        int rno3y = round(no3.y);
+    	int rno4x = round(no4.x);
 		int rno4y = round(no4.y);
 
 		buffer[rno1y][rno1x] = '#';
@@ -133,11 +167,11 @@ int main() {
 		buffer[rno4y][rno4x] = '#';
 		
 		side(); // Nối các điểm lại
-		
+		fill(); // Tô hình vuông
 		// Cho hình vuông quay theo chiều kim đồng hồ
 		turn += 0.01;
 		if (turn >= M_PI)
-			turn = 0.1;
+			turn = 0.01;
 		
 		// In buffer
 		for (int i = 0; i < BOARDSIZE; i++) {
@@ -148,7 +182,7 @@ int main() {
 		}
 
 		cout << turn << '\n'; // In số góc hiện tại
-		usleep(10000); // Delay xíu cho đừng quay nhanh quá
+		usleep(16000); // Delay xíu cho đừng quay nhanh quá
 	}
 }
 
